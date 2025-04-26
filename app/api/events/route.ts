@@ -1,8 +1,6 @@
 import { ExtractSymbolFromText } from "@/utils/ai";
 import { cast } from "@/utils/cast";
 import { coinIt } from "@/utils/coin";
-import { uploadFileToR2 } from "@/utils/file";
-import { createCoin } from "@zoralabs/coins-sdk";
 
 export async function POST (req: Request) {
 
@@ -36,9 +34,9 @@ export async function POST (req: Request) {
                 symbol = await ExtractSymbolFromText(description)
                 console.log(symbol, "symbol")
             }
-            else if (!description && !description.length){
+            else if (!description || !description.length){
                 const text = "Create a Coin  Related to plants, Flora."
-                symbol = await ExtractSymbolFromText(description)
+                symbol = await ExtractSymbolFromText(text)
                 console.log(symbol, "symbol")
             }
         

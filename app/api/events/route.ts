@@ -21,7 +21,6 @@ export async function POST (req: Request) {
         );
         if (imageEmbed) {
             console.log('Image URL:', imageEmbed.url);
-           
         }
     }
 
@@ -34,13 +33,15 @@ export async function POST (req: Request) {
                 symbol = await ExtractSymbolFromText(description)
                 console.log(symbol, "symbol")
             }
-            else if (!description || !description.length){
-                const text = "Create a Coin  Related to plants, Flora."
+            else if (!description || description.length <= 0){
+                const text = "Generate a Coin Name Related to plants and Flaura."
+                console.log("creating coin with no description")
                 symbol = await ExtractSymbolFromText(text)
-                console.log(symbol, "symbol")
+                console.log(symbol, "symbol from no text")
             }
         
             if(!symbol){
+                console.log(" no symbol found")
                 return;
             }
             const metadata = {

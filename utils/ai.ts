@@ -3,6 +3,12 @@ import { GoogleGenAI } from "@google/genai";
 
 
 export const ExtractSymbolFromText = async (text: string): Promise<string> => {
+    console.log("extracting Symbol")
+
+    if(!process.env.GOOGLE_API_KEY) {
+        console.log("NO API KEY present")
+        return "";  // Return empty string instead of undefined
+    }
     // --- Prompt Engineering ---
     // New prompt: Only return a single word (the symbol), no extra text or formatting.
     const prompt = `

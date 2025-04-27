@@ -1,3 +1,5 @@
+"use server"
+
 export const cast = async ({ coinPage, parentId }: { coinPage: string, parentId?: string }) => {
     if (!coinPage) {
         console.error("Error: coinPage (URL to embed) is required.");

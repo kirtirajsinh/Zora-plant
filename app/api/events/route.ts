@@ -1,6 +1,6 @@
-import { ExtractSymbolFromText } from "@/utils/ai";
-import { cast } from "@/utils/cast";
-import { coinIt } from "@/utils/coin";
+import { cast } from "../actions/cast";
+import { coinIt } from "../actions/coin";
+import { ExtractSymbolFromText } from "../actions/extractSymbol";
 
 export async function POST (req: Request) {
 
@@ -32,7 +32,7 @@ export async function POST (req: Request) {
             try {
                 console.log("Trying to extract symbol with description:", description);
         
-                if (description && description.length){
+                if (description){
                     symbol = await ExtractSymbolFromText(description);
                     console.log("Extracted symbol:", symbol);
                 }

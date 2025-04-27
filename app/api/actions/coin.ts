@@ -1,6 +1,7 @@
+"use server"
 import { Address, createPublicClient, createWalletClient, http } from "viem";
 import {privateKeyToAccount} from "viem/accounts"
-import { base, baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 import { createCoin, CreateCoinArgs } from "@zoralabs/coins-sdk";
 import { uploadFileToR2 } from "./file";
 
@@ -70,10 +71,6 @@ export const coinIt = async (metadata : Metadata, creatorAddress: Address ) => {
         console.log(error, "error")
         throw new Error()
     }
-
-
-
-
 
 
 }

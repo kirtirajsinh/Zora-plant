@@ -1,3 +1,4 @@
+"use server"
 // src/lib/ai.ts (or your file path)
 import { GoogleGenAI } from "@google/genai";
 

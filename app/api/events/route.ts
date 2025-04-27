@@ -24,20 +24,27 @@ export async function POST (req: Request) {
         }
     }
 
-    try{
+   
 
         if(imageEmbed?.url) {
             let symbol;
-    
-            if (description && description.length){
-                symbol = await ExtractSymbolFromText(description)
-                console.log(symbol, "symbol")
-            }
-            else if (!description || description.length <= 0){
-                const text = "Generate a Coin Name Related to plants and Flaura."
-                console.log("creating coin with no description")
-                symbol = await ExtractSymbolFromText(text)
-                console.log(symbol, "symbol from no text")
+
+            try {
+                console.log("Trying to extract symbol with description:", description);
+        
+                if (description && description.length){
+                    symbol = await ExtractSymbolFromText(description);
+                    console.log("Extracted symbol:", symbol);
+                }
+                else {
+                    const text = "Generate a Coin Name Related to plants and Flora.";
+                    console.log("No description found, using fallback text:", text);
+                    symbol = await ExtractSymbolFromText(text);
+                    console.log("Extracted fallback symbol:", symbol);
+                }
+            } catch(err) {
+                console.error("Error during ExtractSymbolFromText:", err);
+                return;
             }
         
             if(!symbol){
@@ -55,18 +62,15 @@ export async function POST (req: Request) {
             }
             
     
-             const coinUrl = await coinIt(metadata,creatorAddress )
-    
-             const castResponse = await cast({ coinPage: coinUrl, parentId: body?.data?.hash });
-            console.log(castResponse, "cast Response")
+            try {
+                const coinUrl = await coinIt(metadata, creatorAddress);
+                const castResponse = await cast({ coinPage: coinUrl, parentId: body?.data?.hash });
+                console.log("Cast response:", castResponse);
+            } catch (error) {
+                console.error("Error during coinIt or cast:", error);
+            }
         }
-    
-        // return new Response("OK");
-    }
-    catch(error) {
-        console.log(error, "error")
-        return new Response(JSON.stringify({ error: error || "An error occurred" }))
-    }
+   
 })();
 
 return immediateResponse;

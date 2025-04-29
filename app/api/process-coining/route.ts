@@ -10,7 +10,7 @@ export const POST = verifySignatureAppRouter(async (req: Request) => {
   const description = data.body.data.text || ""
   const creatorAddress = data.body.data.author.verified_addresses.primary.eth_address
   console.log(data, "body from process Coining")
-  let imageEmbed =  data.imageUrl;
+  const imageEmbed =  data.imageUrl;
   let symbol;
 
   try {

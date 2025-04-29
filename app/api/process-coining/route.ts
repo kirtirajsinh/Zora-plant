@@ -1,6 +1,6 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs"
-import { ExtractSymbolFromText } from "../actions/extractSymbol"
-import { coinIt } from "../actions/coin"
+import { ExtractSymbolFromText } from "@/utils/extractSymbol"
+import { coinIt } from "@/utils/coins"
 import { cast } from "@/utils/cast"
 
 
@@ -9,6 +9,7 @@ export const POST = verifySignatureAppRouter(async (req: Request) => {
   const data = await req.json()
   const description = data.body.data.text || ""
   const creatorAddress = data.body.data.author.verified_addresses.primary.eth_address
+  console.log(creatorAddress, "creator Address")
   console.log(data, "body from process Coining")
   const imageEmbed =  data.imageUrl;
   let symbol;
@@ -47,7 +48,7 @@ export const POST = verifySignatureAppRouter(async (req: Request) => {
   
 
   try {
-      const coinUrl = await coinIt(metadata, creatorAddress);
+      const coinUrl = await coinIt(metadata, creatorAddress, symbol);
       const castResponse = await cast({ coinPage: coinUrl, parentId: data?.body?.data?.hash });
       console.log("Cast response:", castResponse);
   } catch (error) {

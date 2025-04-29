@@ -1,4 +1,3 @@
-"use server"
 import { Address, createPublicClient, createWalletClient, http } from "viem";
 import {privateKeyToAccount} from "viem/accounts"
 import { base } from "viem/chains";
@@ -14,7 +13,7 @@ interface Metadata {
         category: string;
     };
 }
-export const coinIt = async (metadata : Metadata, creatorAddress: Address ) => {
+export const coinIt = async (metadata : Metadata, creatorAddress: Address, symbol : string ) => {
     const PlatformReferrer = (process.env.PROJECT_WALLET_ADDRESS?.startsWith('0x')
             ? process.env.PROJECT_WALLET_ADDRESS
             : "0xEbaEbc9baB52157936975D7bF121e3A8a2c09a7f") as `0x${string}`;
@@ -52,8 +51,8 @@ export const coinIt = async (metadata : Metadata, creatorAddress: Address ) => {
         console.log(metaDataIPFS, "metaDataIPFS")
     
         const coinParams = {
-            name: "plant",
-            symbol: "plant",
+            name: symbol,
+            symbol:symbol,
             uri: metaDataIPFS,
             payoutRecipient:creatorAddress,
             platformReferrer: process.env.PROJECT_WALLET_ADDRESS

@@ -1,4 +1,3 @@
-"use server"
 
 export const cast = async ({ coinPage, parentId }: { coinPage: string, parentId?: string }) => {
     if (!coinPage) {
@@ -11,7 +10,7 @@ export const cast = async ({ coinPage, parentId }: { coinPage: string, parentId?
     const url = "https://api.neynar.com/v2/farcaster/cast";
     const body = {
         signer_uuid: process.env.WARPCAST_SIGNER_UUID,
-        text: `Here, your plant shall bear fruit`,
+        text: `here you go - `,
         embeds: embeds,
         parent: parentId,
     };

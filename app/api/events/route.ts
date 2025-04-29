@@ -1,15 +1,11 @@
-import { cast } from "../actions/cast";
-import { coinIt } from "../actions/coin";
-import { ExtractSymbolFromText } from "../actions/extractSymbol";
+import { Client } from "@upstash/qstash";
+
+
+const client = new Client({ token: process.env.QSTASH_TOKEN! })
 
 export async function POST (req: Request) {
-
-    const immediateResponse = new Response("OK", { status: 200 });
-    (async () => {
     const body = await req.json();
     console.log(body);
-    const creatorAddress = body.data.author.verified_addresses.primary.eth_address
-    const description = body.data.text || ""
     // console.log(body.data.author.verified_addresses.primary.eth_address, "embed");
     let imageEmbed;
     console.log(body.data.embeds, "embeds")
@@ -23,55 +19,26 @@ export async function POST (req: Request) {
             console.log('Image URL:', imageEmbed.url);
         }
     }
-
-   
-
         if(imageEmbed?.url) {
-            let symbol;
 
-            try {
-                console.log("Trying to extract symbol with description:", description);
-        
-                if (description){
-                    symbol = await ExtractSymbolFromText(description);
-                    console.log("Extracted symbol:", symbol);
-                }
-                else {
-                    const text = "Generate a Coin Name Related to plants and Flora.";
-                    console.log("No description found, using fallback text:", text);
-                    symbol = await ExtractSymbolFromText(text);
-                    console.log("Extracted fallback symbol:", symbol);
-                }
-            } catch(err) {
-                console.error("Error during ExtractSymbolFromText:", err);
-                return;
+            if(!process.env.PUBLIC_URL){
+                return new Response("NO Public URL Found",{status:500})
             }
-        
-            if(!symbol){
-                console.log(" no symbol found")
-                return;
-            }
-            const metadata = {
-                name: symbol,
-                description: description,
-                symbol: symbol,
-                image: imageEmbed.url, // Assuming uri is the image URL,
-                properties: {
-                    "category": "social"
-                }
-            }
-            
-    
-            try {
-                const coinUrl = await coinIt(metadata, creatorAddress);
-                const castResponse = await cast({ coinPage: coinUrl, parentId: body?.data?.hash });
-                console.log("Cast response:", castResponse);
-            } catch (error) {
-                console.error("Error during coinIt or cast:", error);
-            }
+
+            const result = await client.publishJSON({
+                url: process.env.PUBLIC_URL,
+                body: { body:body, imageUrl: imageEmbed?.url },
+              })
+
+              console.log("returning ASAP.")
+
+             
+              return new Response(JSON.stringify({
+                  message: "Image queued for Coining!",
+                  qstashMessageId: result.messageId,
+      
+                }))
         }
-   
-})();
 
-return immediateResponse;
+        return new Response(JSON.stringify("NO Image to Coin"))
 }

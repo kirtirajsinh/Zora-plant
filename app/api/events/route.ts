@@ -18,6 +18,40 @@ export async function POST (req: Request) {
         if (imageEmbed) {
             console.log('Image URL:', imageEmbed.url);
         }
+        if (!imageEmbed) {
+            const pendingEmbed = body.data.embeds.find((embed: { url?: string; metadata?: { _status?: string } }) => 
+                embed.url && 
+                embed.metadata?._status === 'PENDING'
+            );
+
+            if (pendingEmbed) {
+                console.log('Found pending embed, fetching metadata...');
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'x-api-key': process.env.NEYNAR_API_KEY || ''
+                    }
+                };
+
+                try {
+                    const response = await fetch(
+                        `https://api.neynar.com/v2/farcaster/cast/embed/crawl?url=${encodeURIComponent(pendingEmbed.url)}`,
+                        options
+                    );
+                    const data = await response.json();
+                    
+                    // If the fetched metadata confirms it's an image, use this embed
+                    if (data.metadata?.content_type?.startsWith('image')) {
+                        imageEmbed = {
+                            url: pendingEmbed.url,
+                            metadata: data.metadata
+                        };
+                    }
+                } catch (error) {
+                    console.error('Error fetching metadata:', error);
+                }
+            }
+        }
     }
         if(imageEmbed?.url) {
 

@@ -8,9 +8,7 @@ import { cast } from "@/utils/cast"
 export const POST = verifySignatureAppRouter(async (req: Request) => {
   const data = await req.json()
   const description = data.body.data.text || ""
-  const creatorAddress = data.body.data.author.verified_addresses.primary.eth_address
-  console.log(creatorAddress, "creator Address")
-  console.log(data, "body from process Coining")
+  let creatorAddress = data.body.data.author.verified_addresses.eth_addresses[0] || data.body.data.author.custody_address
   const imageEmbed =  data.imageUrl;
   let symbol;
 

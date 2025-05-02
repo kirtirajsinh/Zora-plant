@@ -49,14 +49,14 @@ export const coinIt = async (metadata : Metadata, creatorAddress: Address, symbo
         const metaDataIPFS = await uploadFileToR2(metadataFile);
     
         console.log(metaDataIPFS, "metaDataIPFS")
-    
-        const coinParams = {
+        console.log(creatorAddress, "creatorAddress", process.env.PROJECT_WALLET_ADDRESS, "payout")
+        const coinParams : CreateCoinArgs = {
             name: symbol,
             symbol:symbol,
             uri: metaDataIPFS,
             payoutRecipient:creatorAddress,
-            platformReferrer: process.env.PROJECT_WALLET_ADDRESS
-        } as CreateCoinArgs;
+            platformReferrer: PlatformReferrer
+        }
     
         const result = await createCoin(coinParams, walletClient, publicClient);
         console.log(result, "result")
